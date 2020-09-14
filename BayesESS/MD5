@@ -1,0 +1,11 @@
+458d647a87e18d7f692377c976185fef *DESCRIPTION
+bb9ea2f9abcf5b245aaad4ce4229b972 *NAMESPACE
+cbe6926424082284ec764df8144940cd *R/RcppExports.R
+8e8dfc0b840f683aa086c1ef83c50f60 *R/ess.R
+3884e149f538e64e2d2a5ceb0d34ad69 *R/internal.R
+748327c6f1dcfcbeaf093c7a59f67c41 *man/ess.Rd
+119ffbd0be202260392b1d181272c346 *src/RcppExports.cpp
+646d4e2c7e7850537f098547bf972b8b *src/fastMean.cpp
+3d71901603b8917639c164b1533beaf3 *src/fastProd.cpp
+a7433af0bbd284d39ca252ed06617be8 *src/fastSum.cpp
+7c22b1b500cab25872924e218f1645f5 *src/registerDynamicSymbol.c

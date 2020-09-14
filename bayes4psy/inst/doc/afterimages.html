@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Jure Demšar, Erik Štrumbelj and Grega Repovš" />
+
+<meta name="date" content="2020-02-19" />
+
+<title>Analysis of the after images experiment data using the Bayesian color model</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Analysis of the after images experiment data using the Bayesian color model</h1>
+<h4 class="author">Jure Demšar, Erik Štrumbelj and Grega Repovš</h4>
+<h4 class="date">2020-02-19</h4>
+
+
+
+<!--
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{b_color: Bayesian color model}
+-->
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In the afterimages task participants were asked to fix their gaze on a fixation point in the middle of the computer screen. Stimulus – a colored rectangle – was then shown above the fixation point. After 20 seconds the rectangle disappeared and a color palette was shown on the right-hand side of the screen. Participants were asked to keep their gaze on the fixation point while using the mouse to select the color that best matches the color of the afterimage that appeared above the fixation point. Then a colored rectangle of the selected color and same size as before was shown below the fixation point. Finally, participants confirmed their selection. For each trial the color of the stimulus rectangle, the response in RGB and the response time were recorded. The goal of this study was to determine which of the two color coding mechanisms (trichromatic or opponent-process), better explains the color of the afterimages. We used six differently colored rectangles: red, green, blue, cyan, magenta, yellow.</p>
+<p>We start our analysis by loading the experiment and stimuli data. The experiment data include subject index, reaction time, response in RGB format, stimuli name (e.g blue) and stimuli values in RGB and HSV. The stimuli data set includes only the information about stimuli (names, RGB and HSV values).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># libs</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(bayes4psy)</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(cowplot)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb1-6" title="6"></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co"># load data</span></a>
+<a class="sourceLine" id="cb1-8" title="8">data_all &lt;-<span class="st"> </span>after_images</a>
+<a class="sourceLine" id="cb1-9" title="9"></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="co"># load stimuli</span></a>
+<a class="sourceLine" id="cb1-11" title="11">stimuli &lt;-<span class="st"> </span>after_images_stimuli</a></code></pre></div>
+<p>Once we load required libraries and thata we can start fitting the Bayesian color models. Below is a detailed example of fitting the Bayesian color model for red color stimuli. Note here that, due to vignette limitations, all fits are built using only one chain, using more chains in parallel is usually more efficient. Also to increase the building speed of vignettes we greatly reduced the amount of iterations, use an appropriate amount of iterations when executing actual analyses!</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># prepare data</span></a>
+<a class="sourceLine" id="cb2-2" title="2">data_red &lt;-<span class="st"> </span>data_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(stimuli <span class="op">==</span><span class="st"> &quot;red&quot;</span>)</a>
+<a class="sourceLine" id="cb2-3" title="3">data_red &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">r=</span>data_red<span class="op">$</span>r,</a>
+<a class="sourceLine" id="cb2-4" title="4">                       <span class="dt">g=</span>data_red<span class="op">$</span>g,</a>
+<a class="sourceLine" id="cb2-5" title="5">                       <span class="dt">b=</span>data_red<span class="op">$</span>b)</a>
+<a class="sourceLine" id="cb2-6" title="6"></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co"># fit</span></a>
+<a class="sourceLine" id="cb2-8" title="8">fit_red &lt;-<span class="st"> </span><span class="kw">b_color</span>(<span class="dt">colors=</span>data_red, <span class="dt">chains=</span><span class="dv">1</span>, <span class="dt">iter=</span><span class="dv">500</span>, <span class="dt">warmup=</span><span class="dv">100</span>)</a></code></pre></div>
+<pre><code>## 
+## SAMPLING FOR MODEL &#39;color&#39; NOW (CHAIN 1).
+## Chain 1: 
+## Chain 1: Gradient evaluation took 0.001 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 10 seconds.
+## Chain 1: Adjust your expectations accordingly!
+## Chain 1: 
+## Chain 1: 
+## Chain 1: WARNING: There aren&#39;t enough warmup iterations to fit the
+## Chain 1:          three stages of adaptation as currently configured.
+## Chain 1:          Reducing each adaptation stage to 15%/75%/10% of
+## Chain 1:          the given number of warmup iterations:
+## Chain 1:            init_buffer = 14
+## Chain 1:            adapt_window = 76
+## Chain 1:            term_buffer = 10
+## Chain 1: 
+## Chain 1: Iteration:   1 / 500 [  0%]  (Warmup)
+## Chain 1: Iteration:  50 / 500 [ 10%]  (Warmup)
+## Chain 1: Iteration: 100 / 500 [ 20%]  (Warmup)
+## Chain 1: Iteration: 101 / 500 [ 20%]  (Sampling)
+## Chain 1: Iteration: 150 / 500 [ 30%]  (Sampling)
+## Chain 1: Iteration: 200 / 500 [ 40%]  (Sampling)
+## Chain 1: Iteration: 250 / 500 [ 50%]  (Sampling)
+## Chain 1: Iteration: 300 / 500 [ 60%]  (Sampling)
+## Chain 1: Iteration: 350 / 500 [ 70%]  (Sampling)
+## Chain 1: Iteration: 400 / 500 [ 80%]  (Sampling)
+## Chain 1: Iteration: 450 / 500 [ 90%]  (Sampling)
+## Chain 1: Iteration: 500 / 500 [100%]  (Sampling)
+## Chain 1: 
+## Chain 1:  Elapsed Time: 0.396 seconds (Warm-up)
+## Chain 1:                1.457 seconds (Sampling)
+## Chain 1:                1.853 seconds (Total)
+## Chain 1:</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="co"># inspect</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="kw">plot_trace</span>(fit_red)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">print</span>(fit_red)</a></code></pre></div>
+<pre><code>## Inference for Stan model: color.
+## 1 chains, each with iter=500; warmup=100; thin=1; 
+## post-warmup draws per chain=400, total post-warmup draws=400.
+## 
+##             mean se_mean   sd     2.5%      25%      50%      75%    97.5% n_eff Rhat
+## mu_r       60.08    0.21 4.00    52.60    57.32    60.10    62.85    67.70   354 1.00
+## sigma_r    58.11    0.08 2.57    53.41    56.45    57.85    59.58    63.55  1041 1.00
+## mu_g      164.26    0.11 2.69   158.66   162.58   164.14   166.09   169.53   573 1.01
+## sigma_g    44.41    0.08 1.96    40.52    43.13    44.28    45.59    48.60   640 1.00
+## mu_b      235.46    0.21 2.85   230.20   233.47   235.52   237.47   240.64   189 1.00
+## sigma_b    45.05    0.07 2.14    41.37    43.48    44.83    46.68    49.12   892 1.00
+## mu_h       -2.69    0.00 0.03    -2.76    -2.71    -2.70    -2.67    -2.64   389 1.00
+## kappa_h     5.22    0.02 0.48     4.37     4.86     5.19     5.54     6.15   425 1.00
+## mu_s        0.78    0.00 0.01     0.76     0.77     0.78     0.79     0.81   536 1.00
+## sigma_s     0.21    0.00 0.01     0.19     0.20     0.21     0.21     0.23   855 1.00
+## mu_v        0.95    0.00 0.01     0.94     0.95     0.95     0.96     0.96   133 1.00
+## sigma_v     0.10    0.00 0.01     0.09     0.10     0.10     0.11     0.12  1041 1.00
+## lp__    -1940.36    0.16 2.32 -1945.51 -1941.83 -1940.09 -1938.59 -1936.84   211 1.01
+## 
+## Samples were drawn using NUTS(diag_e) at Wed Feb 19 11:04:25 2020.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">plot_hsv</span>(fit_red)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>The function <strong>plot_hsv</strong> was developed specially for the color model. Input data points are visualized with circles, mean of the fit is visualized with a solid line and the 95% HDI of the underlying distribution is visualized as a colored band. If we are satisfied with the fit we repeat the whole process five more times for the remaining five colors of stimuli. For brevity only code for fitting the model is executed here, the inspections of fits are ommited.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co"># green</span></a>
+<a class="sourceLine" id="cb8-2" title="2">data_green &lt;-<span class="st"> </span>data_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(stimuli <span class="op">==</span><span class="st"> &quot;green&quot;</span>)</a>
+<a class="sourceLine" id="cb8-3" title="3">data_green &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">r=</span>data_green<span class="op">$</span>r,</a>
+<a class="sourceLine" id="cb8-4" title="4">                         <span class="dt">g=</span>data_green<span class="op">$</span>g,</a>
+<a class="sourceLine" id="cb8-5" title="5">                         <span class="dt">b=</span>data_green<span class="op">$</span>b)</a>
+<a class="sourceLine" id="cb8-6" title="6">fit_green &lt;-<span class="st"> </span><span class="kw">b_color</span>(<span class="dt">colors=</span>data_green, <span class="dt">chains=</span><span class="dv">1</span>, <span class="dt">iter=</span><span class="dv">500</span>, <span class="dt">warmup=</span><span class="dv">100</span>)</a></code></pre></div>
+<pre><code>## 
+## SAMPLING FOR MODEL &#39;color&#39; NOW (CHAIN 1).
+## Chain 1: 
+## Chain 1: Gradient evaluation took 0 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+## Chain 1: Adjust your expectations accordingly!
+## Chain 1: 
+## Chain 1: 
+## Chain 1: WARNING: There aren&#39;t enough warmup iterations to fit the
+## Chain 1:          three stages of adaptation as currently configured.
+## Chain 1:          Reducing each adaptation stage to 15%/75%/10% of
+## Chain 1:          the given number of warmup iterations:
+## Chain 1:            init_buffer = 14
+## Chain 1:            adapt_window = 76
+## Chain 1:            term_buffer = 10
+## Chain 1: 
+## Chain 1: Iteration:   1 / 500 [  0%]  (Warmup)
+## Chain 1: Iteration:  50 / 500 [ 10%]  (Warmup)
+## Chain 1: Iteration: 100 / 500 [ 20%]  (Warmup)
+## Chain 1: Iteration: 101 / 500 [ 20%]  (Sampling)
+## Chain 1: Iteration: 150 / 500 [ 30%]  (Sampling)
+## Chain 1: Iteration: 200 / 500 [ 40%]  (Sampling)
+## Chain 1: Iteration: 250 / 500 [ 50%]  (Sampling)
+## Chain 1: Iteration: 300 / 500 [ 60%]  (Sampling)
+## Chain 1: Iteration: 350 / 500 [ 70%]  (Sampling)
+## Chain 1: Iteration: 400 / 500 [ 80%]  (Sampling)
+## Chain 1: Iteration: 450 / 500 [ 90%]  (Sampling)
+## Chain 1: Iteration: 500 / 500 [100%]  (Sampling)
+## Chain 1: 
+## Chain 1:  Elapsed Time: 0.372 seconds (Warm-up)
+## Chain 1:                1.364 seconds (Sampling)
+## Chain 1:                1.736 seconds (Total)
+## Chain 1:</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="co"># blue</span></a>
+<a class="sourceLine" id="cb10-2" title="2">data_blue &lt;-<span class="st"> </span>data_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(stimuli <span class="op">==</span><span class="st"> &quot;blue&quot;</span>)</a>
+<a class="sourceLine" id="cb10-3" title="3">data_blue &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">r=</span>data_blue<span class="op">$</span>r,</a>
+<a class="sourceLine" id="cb10-4" title="4">                        <span class="dt">g=</span>data_blue<span class="op">$</span>g,</a>
+<a class="sourceLine" id="cb10-5" title="5">                        <span class="dt">b=</span>data_blue<span class="op">$</span>b)</a>
+<a class="sourceLine" id="cb10-6" title="6">fit_blue &lt;-<span class="st"> </span><span class="kw">b_color</span>(<span class="dt">colors=</span>data_blue, <span class="dt">chains=</span><span class="dv">1</span>, <span class="dt">iter=</span><span class="dv">500</span>, <span class="dt">warmup=</span><span class="dv">100</span>)</a></code></pre></div>
+<pre><code>## 
+## SAMPLING FOR MODEL &#39;color&#39; NOW (CHAIN 1).
+## Chain 1: 
+## Chain 1: Gradient evaluation took 0 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+## Chain 1: Adjust your expectations accordingly!
+## Chain 1: 
+## Chain 1: 
+## Chain 1: WARNING: There aren&#39;t enough warmup iterations to fit the
+## Chain 1:          three stages of adaptation as currently configured.
+## Chain 1:          Reducing each adaptation stage to 15%/75%/10% of
+## Chain 1:          the given number of warmup iterations:
+## Chain 1:            init_buffer = 14
+## Chain 1:            adapt_window = 76
+## Chain 1:            term_buffer = 10
+## Chain 1: 
+## Chain 1: Iteration:   1 / 500 [  0%]  (Warmup)
+## Chain 1: Iteration:  50 / 500 [ 10%]  (Warmup)
+## Chain 1: Iteration: 100 / 500 [ 20%]  (Warmup)
+## Chain 1: Iteration: 101 / 500 [ 20%]  (Sampling)
+## Chain 1: Iteration: 150 / 500 [ 30%]  (Sampling)
+## Chain 1: Iteration: 200 / 500 [ 40%]  (Sampling)
+## Chain 1: Iteration: 250 / 500 [ 50%]  (Sampling)
+## Chain 1: Iteration: 300 / 500 [ 60%]  (Sampling)
+## Chain 1: Iteration: 350 / 500 [ 70%]  (Sampling)
+## Chain 1: Iteration: 400 / 500 [ 80%]  (Sampling)
+## Chain 1: Iteration: 450 / 500 [ 90%]  (Sampling)
+## Chain 1: Iteration: 500 / 500 [100%]  (Sampling)
+## Chain 1: 
+## Chain 1:  Elapsed Time: 0.395 seconds (Warm-up)
+## Chain 1:                1.945 seconds (Sampling)
+## Chain 1:                2.34 seconds (Total)
+## Chain 1:</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="co"># yellow</span></a>
+<a class="sourceLine" id="cb12-2" title="2">data_yellow &lt;-<span class="st"> </span>data_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(stimuli <span class="op">==</span><span class="st"> &quot;yellow&quot;</span>)</a>
+<a class="sourceLine" id="cb12-3" title="3">data_yellow &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">r=</span>data_yellow<span class="op">$</span>r,</a>
+<a class="sourceLine" id="cb12-4" title="4">                          <span class="dt">g=</span>data_yellow<span class="op">$</span>g,</a>
+<a class="sourceLine" id="cb12-5" title="5">                          <span class="dt">b=</span>data_yellow<span class="op">$</span>b)</a>
+<a class="sourceLine" id="cb12-6" title="6">fit_yellow &lt;-<span class="st"> </span><span class="kw">b_color</span>(<span class="dt">colors=</span>data_yellow, <span class="dt">chains=</span><span class="dv">1</span>, <span class="dt">iter=</span><span class="dv">500</span>, <span class="dt">warmup=</span><span class="dv">100</span>)</a></code></pre></div>
+<pre><code>## 
+## SAMPLING FOR MODEL &#39;color&#39; NOW (CHAIN 1).
+## Chain 1: 
+## Chain 1: Gradient evaluation took 0 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+## Chain 1: Adjust your expectations accordingly!
+## Chain 1: 
+## Chain 1: 
+## Chain 1: WARNING: There aren&#39;t enough warmup iterations to fit the
+## Chain 1:          three stages of adaptation as currently configured.
+## Chain 1:          Reducing each adaptation stage to 15%/75%/10% of
+## Chain 1:          the given number of warmup iterations:
+## Chain 1:            init_buffer = 14
+## Chain 1:            adapt_window = 76
+## Chain 1:            term_buffer = 10
+## Chain 1: 
+## Chain 1: Iteration:   1 / 500 [  0%]  (Warmup)
+## Chain 1: Iteration:  50 / 500 [ 10%]  (Warmup)
+## Chain 1: Iteration: 100 / 500 [ 20%]  (Warmup)
+## Chain 1: Iteration: 101 / 500 [ 20%]  (Sampling)
+## Chain 1: Iteration: 150 / 500 [ 30%]  (Sampling)
+## Chain 1: Iteration: 200 / 500 [ 40%]  (Sampling)
+## Chain 1: Iteration: 250 / 500 [ 50%]  (Sampling)
+## Chain 1: Iteration: 300 / 500 [ 60%]  (Sampling)
+## Chain 1: Iteration: 350 / 500 [ 70%]  (Sampling)
+## Chain 1: Iteration: 400 / 500 [ 80%]  (Sampling)
+## Chain 1: Iteration: 450 / 500 [ 90%]  (Sampling)
+## Chain 1: Iteration: 500 / 500 [100%]  (Sampling)
+## Chain 1: 
+## Chain 1:  Elapsed Time: 0.358 seconds (Warm-up)
+## Chain 1:                1.706 seconds (Sampling)
+## Chain 1:                2.064 seconds (Total)
+## Chain 1:</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="co"># cyan</span></a>
+<a class="sourceLine" id="cb14-2" title="2">data_cyan &lt;-<span class="st"> </span>data_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(stimuli <span class="op">==</span><span class="st"> &quot;cyan&quot;</span>)</a>
+<a class="sourceLine" id="cb14-3" title="3">data_cyan &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">r=</span>data_cyan<span class="op">$</span>r,</a>
+<a class="sourceLine" id="cb14-4" title="4">                        <span class="dt">g=</span>data_cyan<span class="op">$</span>g,</a>
+<a class="sourceLine" id="cb14-5" title="5">                        <span class="dt">b=</span>data_cyan<span class="op">$</span>b)</a>
+<a class="sourceLine" id="cb14-6" title="6">fit_cyan &lt;-<span class="st"> </span><span class="kw">b_color</span>(<span class="dt">colors=</span>data_cyan, <span class="dt">chains=</span><span class="dv">1</span>, <span class="dt">iter=</span><span class="dv">500</span>, <span class="dt">warmup=</span><span class="dv">100</span>)</a></code></pre></div>
+<pre><code>## 
+## SAMPLING FOR MODEL &#39;color&#39; NOW (CHAIN 1).
+## Chain 1: 
+## Chain 1: Gradient evaluation took 0 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+## Chain 1: Adjust your expectations accordingly!
+## Chain 1: 
+## Chain 1: 
+## Chain 1: WARNING: There aren&#39;t enough warmup iterations to fit the
+## Chain 1:          three stages of adaptation as currently configured.
+## Chain 1:          Reducing each adaptation stage to 15%/75%/10% of
+## Chain 1:          the given number of warmup iterations:
+## Chain 1:            init_buffer = 14
+## Chain 1:            adapt_window = 76
+## Chain 1:            term_buffer = 10
+## Chain 1: 
+## Chain 1: Iteration:   1 / 500 [  0%]  (Warmup)
+## Chain 1: Iteration:  50 / 500 [ 10%]  (Warmup)
+## Chain 1: Iteration: 100 / 500 [ 20%]  (Warmup)
+## Chain 1: Iteration: 101 / 500 [ 20%]  (Sampling)
+## Chain 1: Iteration: 150 / 500 [ 30%]  (Sampling)
+## Chain 1: Iteration: 200 / 500 [ 40%]  (Sampling)
+## Chain 1: Iteration: 250 / 500 [ 50%]  (Sampling)
+## Chain 1: Iteration: 300 / 500 [ 60%]  (Sampling)
+## Chain 1: Iteration: 350 / 500 [ 70%]  (Sampling)
+## Chain 1: Iteration: 400 / 500 [ 80%]  (Sampling)
+## Chain 1: Iteration: 450 / 500 [ 90%]  (Sampling)
+## Chain 1: Iteration: 500 / 500 [100%]  (Sampling)
+## Chain 1: 
+## Chain 1:  Elapsed Time: 0.243 seconds (Warm-up)
+## Chain 1:                1.336 seconds (Sampling)
+## Chain 1:                1.579 seconds (Total)
+## Chain 1:</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="co"># magenta</span></a>
+<a class="sourceLine" id="cb16-2" title="2">data_magenta &lt;-<span class="st"> </span>data_all <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(stimuli <span class="op">==</span><span class="st"> &quot;magenta&quot;</span>)</a>
+<a class="sourceLine" id="cb16-3" title="3">data_magenta &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">r=</span>data_magenta<span class="op">$</span>r,</a>
+<a class="sourceLine" id="cb16-4" title="4">                           <span class="dt">g=</span>data_magenta<span class="op">$</span>g,</a>
+<a class="sourceLine" id="cb16-5" title="5">                           <span class="dt">b=</span>data_magenta<span class="op">$</span>b)</a>
+<a class="sourceLine" id="cb16-6" title="6">fit_magenta &lt;-<span class="st"> </span><span class="kw">b_color</span>(<span class="dt">colors=</span>data_magenta, <span class="dt">chains=</span><span class="dv">1</span>, <span class="dt">iter=</span><span class="dv">500</span>, <span class="dt">warmup=</span><span class="dv">100</span>)</a></code></pre></div>
+<pre><code>## 
+## SAMPLING FOR MODEL &#39;color&#39; NOW (CHAIN 1).
+## Chain 1: 
+## Chain 1: Gradient evaluation took 0 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0 seconds.
+## Chain 1: Adjust your expectations accordingly!
+## Chain 1: 
+## Chain 1: 
+## Chain 1: WARNING: There aren&#39;t enough warmup iterations to fit the
+## Chain 1:          three stages of adaptation as currently configured.
+## Chain 1:          Reducing each adaptation stage to 15%/75%/10% of
+## Chain 1:          the given number of warmup iterations:
+## Chain 1:            init_buffer = 14
+## Chain 1:            adapt_window = 76
+## Chain 1:            term_buffer = 10
+## Chain 1: 
+## Chain 1: Iteration:   1 / 500 [  0%]  (Warmup)
+## Chain 1: Iteration:  50 / 500 [ 10%]  (Warmup)
+## Chain 1: Iteration: 100 / 500 [ 20%]  (Warmup)
+## Chain 1: Iteration: 101 / 500 [ 20%]  (Sampling)
+## Chain 1: Iteration: 150 / 500 [ 30%]  (Sampling)
+## Chain 1: Iteration: 200 / 500 [ 40%]  (Sampling)
+## Chain 1: Iteration: 250 / 500 [ 50%]  (Sampling)
+## Chain 1: Iteration: 300 / 500 [ 60%]  (Sampling)
+## Chain 1: Iteration: 350 / 500 [ 70%]  (Sampling)
+## Chain 1: Iteration: 400 / 500 [ 80%]  (Sampling)
+## Chain 1: Iteration: 450 / 500 [ 90%]  (Sampling)
+## Chain 1: Iteration: 500 / 500 [100%]  (Sampling)
+## Chain 1: 
+## Chain 1:  Elapsed Time: 0.394 seconds (Warm-up)
+## Chain 1:                1.677 seconds (Sampling)
+## Chain 1:                2.071 seconds (Total)
+## Chain 1:</code></pre>
+<p>We start the analysis by loading data about the colors predicted by the trichromatic or the opponent-process theory. We can then use the <strong>plot_distributions_hsv</strong> function of the Bayesian color model to produce a visualization of the accuracy of both color coding mechanisms predictions for each stimuli independently. Each graph visualizes the fitted distribution, displayed stimuli and responses predicted by the trichromatic and opponent-process coding. This additional information can be added to the visualization via annotation points and lines.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="co"># load theory predictions</span></a>
+<a class="sourceLine" id="cb18-2" title="2">trichromatic &lt;-<span class="st"> </span>after_images_trichromatic</a>
+<a class="sourceLine" id="cb18-3" title="3">opponent_process &lt;-<span class="st"> </span>after_images_opponent_process</a>
+<a class="sourceLine" id="cb18-4" title="4"></a>
+<a class="sourceLine" id="cb18-5" title="5"><span class="co"># red</span></a>
+<a class="sourceLine" id="cb18-6" title="6">stimulus &lt;-<span class="st"> &quot;red&quot;</span></a>
+<a class="sourceLine" id="cb18-7" title="7">lines &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-8" title="8">lines[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-9" title="9">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-10" title="10">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-11" title="11">lines[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-12" title="12">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-13" title="13">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-14" title="14">    </a>
+<a class="sourceLine" id="cb18-15" title="15">points &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-16" title="16">points[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h_s,</a>
+<a class="sourceLine" id="cb18-17" title="17">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s_s,</a>
+<a class="sourceLine" id="cb18-18" title="18">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v_s)</a>
+<a class="sourceLine" id="cb18-19" title="19">    </a>
+<a class="sourceLine" id="cb18-20" title="20">plot_red &lt;-<span class="st"> </span><span class="kw">plot_distributions_hsv</span>(fit_red, <span class="dt">points=</span>points,</a>
+<a class="sourceLine" id="cb18-21" title="21">                                   <span class="dt">lines=</span>lines, <span class="dt">hsv=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb18-22" title="22"></a>
+<a class="sourceLine" id="cb18-23" title="23">plot_red &lt;-<span class="st"> </span>plot_red <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Red&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-24" title="24"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb18-25" title="25"></a>
+<a class="sourceLine" id="cb18-26" title="26"><span class="co"># green</span></a>
+<a class="sourceLine" id="cb18-27" title="27">stimulus &lt;-<span class="st"> &quot;green&quot;</span></a>
+<a class="sourceLine" id="cb18-28" title="28">lines &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-29" title="29">lines[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-30" title="30">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-31" title="31">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-32" title="32">lines[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-33" title="33">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-34" title="34">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-35" title="35"></a>
+<a class="sourceLine" id="cb18-36" title="36">points &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-37" title="37">points[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h_s,</a>
+<a class="sourceLine" id="cb18-38" title="38">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s_s,</a>
+<a class="sourceLine" id="cb18-39" title="39">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v_s)</a>
+<a class="sourceLine" id="cb18-40" title="40"></a>
+<a class="sourceLine" id="cb18-41" title="41">plot_green &lt;-<span class="st"> </span><span class="kw">plot_distributions_hsv</span>(fit_green, <span class="dt">points=</span>points,</a>
+<a class="sourceLine" id="cb18-42" title="42">                                     <span class="dt">lines=</span>lines, <span class="dt">hsv=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb18-43" title="43">plot_green &lt;-<span class="st"> </span>plot_green <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Green&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-44" title="44"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb18-45" title="45"></a>
+<a class="sourceLine" id="cb18-46" title="46"><span class="co"># blue</span></a>
+<a class="sourceLine" id="cb18-47" title="47">stimulus &lt;-<span class="st"> &quot;blue&quot;</span></a>
+<a class="sourceLine" id="cb18-48" title="48">lines &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-49" title="49">lines[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-50" title="50">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-51" title="51">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-52" title="52">lines[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-53" title="53">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-54" title="54">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-55" title="55"></a>
+<a class="sourceLine" id="cb18-56" title="56">points &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-57" title="57">points[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h_s,</a>
+<a class="sourceLine" id="cb18-58" title="58">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s_s,</a>
+<a class="sourceLine" id="cb18-59" title="59">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v_s)</a>
+<a class="sourceLine" id="cb18-60" title="60"></a>
+<a class="sourceLine" id="cb18-61" title="61">plot_blue &lt;-<span class="st"> </span><span class="kw">plot_distributions_hsv</span>(fit_blue, <span class="dt">points=</span>points,</a>
+<a class="sourceLine" id="cb18-62" title="62">                                    <span class="dt">lines=</span>lines, <span class="dt">hsv=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb18-63" title="63">plot_blue &lt;-<span class="st"> </span>plot_blue <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Blue&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-64" title="64"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb18-65" title="65"></a>
+<a class="sourceLine" id="cb18-66" title="66"><span class="co"># yellow</span></a>
+<a class="sourceLine" id="cb18-67" title="67">stimulus &lt;-<span class="st"> &quot;yellow&quot;</span></a>
+<a class="sourceLine" id="cb18-68" title="68">lines &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-69" title="69">lines[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-70" title="70">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-71" title="71">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-72" title="72">lines[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-73" title="73">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-74" title="74">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-75" title="75"></a>
+<a class="sourceLine" id="cb18-76" title="76">points &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-77" title="77">points[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h_s,</a>
+<a class="sourceLine" id="cb18-78" title="78">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s_s,</a>
+<a class="sourceLine" id="cb18-79" title="79">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v_s)</a>
+<a class="sourceLine" id="cb18-80" title="80"></a>
+<a class="sourceLine" id="cb18-81" title="81">plot_yellow &lt;-<span class="st"> </span><span class="kw">plot_distributions_hsv</span>(fit_yellow, <span class="dt">points=</span>points,</a>
+<a class="sourceLine" id="cb18-82" title="82">                                      <span class="dt">lines=</span>lines, <span class="dt">hsv=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb18-83" title="83">plot_yellow &lt;-<span class="st"> </span>plot_yellow <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Yellow&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-84" title="84"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb18-85" title="85"></a>
+<a class="sourceLine" id="cb18-86" title="86"></a>
+<a class="sourceLine" id="cb18-87" title="87"><span class="co"># cyan</span></a>
+<a class="sourceLine" id="cb18-88" title="88">stimulus &lt;-<span class="st"> &quot;cyan&quot;</span></a>
+<a class="sourceLine" id="cb18-89" title="89">lines &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-90" title="90">lines[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-91" title="91">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-92" title="92">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-93" title="93">lines[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-94" title="94">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-95" title="95">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-96" title="96"></a>
+<a class="sourceLine" id="cb18-97" title="97">points &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-98" title="98">points[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h_s,</a>
+<a class="sourceLine" id="cb18-99" title="99">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s_s,</a>
+<a class="sourceLine" id="cb18-100" title="100">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v_s)</a>
+<a class="sourceLine" id="cb18-101" title="101"></a>
+<a class="sourceLine" id="cb18-102" title="102">plot_cyan &lt;-<span class="st"> </span><span class="kw">plot_distributions_hsv</span>(fit_cyan, <span class="dt">points=</span>points,</a>
+<a class="sourceLine" id="cb18-103" title="103">                                    <span class="dt">lines=</span>lines, <span class="dt">hsv=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb18-104" title="104">plot_cyan &lt;-<span class="st"> </span>plot_cyan <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Cyan&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-105" title="105"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb18-106" title="106"></a>
+<a class="sourceLine" id="cb18-107" title="107"></a>
+<a class="sourceLine" id="cb18-108" title="108"><span class="co"># magenta</span></a>
+<a class="sourceLine" id="cb18-109" title="109">stimulus &lt;-<span class="st"> &quot;magenta&quot;</span></a>
+<a class="sourceLine" id="cb18-110" title="110">lines &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-111" title="111">lines[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-112" title="112">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-113" title="113">                trichromatic[trichromatic<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-114" title="114">lines[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h,</a>
+<a class="sourceLine" id="cb18-115" title="115">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s,</a>
+<a class="sourceLine" id="cb18-116" title="116">                opponent_process[opponent_process<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v)</a>
+<a class="sourceLine" id="cb18-117" title="117"></a>
+<a class="sourceLine" id="cb18-118" title="118">points &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb18-119" title="119">points[[<span class="dv">1</span>]] &lt;-<span class="st"> </span><span class="kw">c</span>(stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>h_s,</a>
+<a class="sourceLine" id="cb18-120" title="120">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>s_s,</a>
+<a class="sourceLine" id="cb18-121" title="121">                 stimuli[stimuli<span class="op">$</span>stimuli <span class="op">==</span><span class="st"> </span>stimulus, ]<span class="op">$</span>v_s)</a>
+<a class="sourceLine" id="cb18-122" title="122"></a>
+<a class="sourceLine" id="cb18-123" title="123">plot_magenta &lt;-<span class="st"> </span><span class="kw">plot_distributions_hsv</span>(fit_magenta, <span class="dt">points=</span>points,</a>
+<a class="sourceLine" id="cb18-124" title="124">                                       <span class="dt">lines=</span>lines, <span class="dt">hsv=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb18-125" title="125">plot_magenta &lt;-<span class="st"> </span>plot_magenta <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;Magenta&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-126" title="126"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a></code></pre></div>
+<p>We can then use the <strong>cowplot</strong> library to combine the plots into a single figure.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">plot_grid</span>(plot_red, plot_green, plot_blue,</a>
+<a class="sourceLine" id="cb19-2" title="2">          plot_yellow, plot_cyan, plot_magenta,</a>
+<a class="sourceLine" id="cb19-3" title="3">          <span class="dt">ncol=</span><span class="dv">3</span>, <span class="dt">nrow=</span><span class="dv">2</span>, <span class="dt">scale=</span><span class="fl">0.9</span>)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>This last figure features the comparison of predictions between the thrichromatic and the oponent-process color coding. The long solid line visualizes the trichromatic color coding prediction while the dashed line visualizes the opponent-process color coding. Short solid line represents the mean hue of the fit and the the colored band the 95% HDI of the distribution underlying the fit. The small colored circle visualizes the color of the presented stimuli. In the case of blue and yellow stimuli the dashed line is not visible because both color codings predict the same outcome. The prediction based on the thrichromatic color coding seems more accurate as its prediction is always inside the 95% of the most probable subject’s responses and is always closer to the mean predicted hue than the opponent-process prediction. The opponent-process prediction is outside of the 95% of the most probable subject’s responses in cases of red and green stimuli.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

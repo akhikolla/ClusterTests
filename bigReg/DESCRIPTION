@@ -1,0 +1,32 @@
+Package: bigReg
+Type: Package
+Title: Generalized Linear Models (GLM) for Large Data Sets
+Version: 0.1.2
+Date: 2016-07-23
+Author: Chibisi Chima-Okereke <chibisi@active-analytics.com>
+Maintainer: Chibisi Chima-Okereke <chibisi@active-analytics.com>
+Description: Allows the user to carry out GLM on very large
+    data sets. Data can be created using the data_frame() function and appended
+    to the object with object$append(data); data_frame and data_matrix objects
+    are available that allow the user to store large data on disk. The data is
+    stored as doubles in binary format and any character columns are transformed
+    to factors and then stored as numeric (binary) data while a look-up table is
+    stored in a separate .meta_data file in the same folder. The data is stored in
+    blocks and GLM regression algorithm is modified and carries out a MapReduce-
+    like algorithm to fit the model. The functions bglm(), and summary()
+    and bglm_predict() are available for creating and post-processing of models.
+    The library requires Armadillo installed on your system. It probably won't 
+    function on windows since multi-core processing is done using mclapply() 
+    which forks R on Unix/Linux type operating systems.
+License: GPL (>= 2)
+Depends: R (>= 3.2.0), Rcpp (>= 0.12.3), parallel, methods, stats, uuid
+        (>= 0.1-2), MASS (>= 7.3-39)
+LinkingTo: Rcpp, RcppArmadillo (>= 0.5.200.1.0)
+OS_type: unix
+Collate: 'RcppExports.R' 'data_frame.r' 'data_matrix.r' 'family.r'
+        'map_reg.r'
+RoxygenNote: 5.0.1
+NeedsCompilation: yes
+Packaged: 2016-07-25 09:31:12 UTC; chib
+Repository: CRAN
+Date/Publication: 2016-07-25 19:16:58

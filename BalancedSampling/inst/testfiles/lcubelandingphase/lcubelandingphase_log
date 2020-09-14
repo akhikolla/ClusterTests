@@ -1,0 +1,47 @@
+==781418== Memcheck, a memory error detector
+==781418== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==781418== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==781418== Command: ./lcubelandingphase_DeepState_TestHarness --fuzz --output_test_dir /home/akolla/R/x86_64-pc-linux-gnu-library/3.6/RcppDeepState/extdata/compileAttributes/BalancedSampling/inst/testfiles/lcubelandingphase/lcubelandingphase_output
+==781418== 
+==781418== Invalid read of size 8
+==781418==    at 0x49CD913: Rf_install (in /usr/lib/R/lib/libR.so)
+==781418==    by 0x42F10F: Rcpp::Function_Impl<Rcpp::PreserveStorage>::get_function(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SEXPREC*) (Rcpp/include/Rcpp/Function.h:110)
+==781418==    by 0x42E1D3: Rcpp::Function_Impl<Rcpp::PreserveStorage>::Function_Impl(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (Rcpp/include/Rcpp/Function.h:62)
+==781418==    by 0x407CCC: __cxx_global_var_init.4 (src/cube.cpp:11)
+==781418==    by 0x407D6C: _GLOBAL__sub_I_cube.cpp (cube.cpp:0)
+==781418==    by 0x436D6C: __libc_csu_init (in /home/akolla/R/x86_64-pc-linux-gnu-library/3.6/RcppDeepState/extdata/compileAttributes/BalancedSampling/inst/testfiles/lcubelandingphase/lcubelandingphase_DeepState_TestHarness)
+==781418==    by 0x507B03F: (below main) (libc-start.c:264)
+==781418==  Address 0x269c8 is not stack'd, malloc'd or (recently) free'd
+==781418== 
+==781418== 
+==781418== Process terminating with default action of signal 11 (SIGSEGV)
+==781418==  Access not within mapped region at address 0x269C8
+==781418==    at 0x49CD913: Rf_install (in /usr/lib/R/lib/libR.so)
+==781418==    by 0x42F10F: Rcpp::Function_Impl<Rcpp::PreserveStorage>::get_function(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, SEXPREC*) (Rcpp/include/Rcpp/Function.h:110)
+==781418==    by 0x42E1D3: Rcpp::Function_Impl<Rcpp::PreserveStorage>::Function_Impl(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (Rcpp/include/Rcpp/Function.h:62)
+==781418==    by 0x407CCC: __cxx_global_var_init.4 (src/cube.cpp:11)
+==781418==    by 0x407D6C: _GLOBAL__sub_I_cube.cpp (cube.cpp:0)
+==781418==    by 0x436D6C: __libc_csu_init (in /home/akolla/R/x86_64-pc-linux-gnu-library/3.6/RcppDeepState/extdata/compileAttributes/BalancedSampling/inst/testfiles/lcubelandingphase/lcubelandingphase_DeepState_TestHarness)
+==781418==    by 0x507B03F: (below main) (libc-start.c:264)
+==781418==  If you believe this happened as a result of a stack
+==781418==  overflow in your program's main thread (unlikely but
+==781418==  possible), you can try to increase the size of the
+==781418==  main thread stack using the --main-stacksize= flag.
+==781418==  The main thread stack size used in this run was 8388608.
+==781418== 
+==781418== HEAP SUMMARY:
+==781418==     in use at exit: 1,048 bytes in 2 blocks
+==781418==   total heap usage: 4 allocs, 2 frees, 106,568 bytes allocated
+==781418== 
+==781418== LEAK SUMMARY:
+==781418==    definitely lost: 0 bytes in 0 blocks
+==781418==    indirectly lost: 0 bytes in 0 blocks
+==781418==      possibly lost: 0 bytes in 0 blocks
+==781418==    still reachable: 1,048 bytes in 2 blocks
+==781418==         suppressed: 0 bytes in 0 blocks
+==781418== Reachable blocks (those to which a pointer was found) are not shown.
+==781418== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==781418== 
+==781418== For lists of detected and suppressed errors, rerun with: -s
+==781418== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+Segmentation fault (core dumped)

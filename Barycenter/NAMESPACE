@@ -1,0 +1,4 @@
+useDynLib(Barycenter)
+import(stats, graphics)
+importFrom(Rcpp, evalCpp)
+export(Sinkhorn, WaBarycenter, Greenkhorn)

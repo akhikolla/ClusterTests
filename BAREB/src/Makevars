@@ -1,0 +1,7 @@
+# Using clang 4, which has openMP support
+CC = /usr/local/clang4/bin/clang
+CXX = /usr/local/clang4/bin/clang++
+#CFLAGS = -g -O2 -Wall -pedantic -Wconversion -Wno-sign-conversion
+#CXXFLAGS = -g -O2 -Wall -pedantic -Wconversion -Wno-sign-conversion
+#CXX11 = $CXX
+CXX11 = /usr/local/clang4/bin/clang++

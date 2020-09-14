@@ -1,0 +1,18 @@
+Package: Barycenter
+Encoding: latin1
+Type: Package
+Title: Regularized Wasserstein Distances and Barycenters
+Version: 1.3.1
+Date: 2018-04-05
+Author: Marcel Klatt
+Maintainer: Marcel Klatt <marcel.klatt@stud.uni-goettingen.de>
+Description: Computations of entropy regularized Wasserstein Distances, a.k.a. dual-Sinkhorn divergences, and entropy regularized Wasserstein Barycenters. Relevant papers are Marco Cuturi (2013) <arXiv:1306.0895>, Marco Cuturi (2014) <arXiv:1310.4375> and Jason Altschuler et al. <arXiv:1705.09634>. 
+License: GPL-2
+LazyData: TRUE
+LinkingTo: Rcpp, RcppArmadillo
+Depends: R (>= 2.10.0), Rcpp (>= 0.11.1)
+RoxygenNote: 6.0.1
+NeedsCompilation: yes
+Packaged: 2018-05-04 08:48:15 UTC; mklatt
+Repository: CRAN
+Date/Publication: 2018-05-04 09:05:27 UTC

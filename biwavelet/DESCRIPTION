@@ -1,0 +1,23 @@
+Package: biwavelet
+Type: Package
+Title: Conduct Univariate and Bivariate Wavelet Analyses
+Version: 0.20.19
+Date: 2019-08-01
+Author: Tarik C. Gouhier, Aslak Grinsted, Viliam Simko
+Maintainer: Tarik C. Gouhier <tarik.gouhier@gmail.com>
+Description: This is a port of the WTC MATLAB package written by Aslak Grinsted
+    and the wavelet program written by Christopher Torrence and Gibert P.
+    Compo. This package can be used to perform univariate and bivariate
+    (cross-wavelet, wavelet coherence, wavelet clustering) analyses.
+License: GPL (>= 2)
+URL: https://github.com/tgouhier/biwavelet
+BugReports: https://github.com/tgouhier/biwavelet/issues
+LazyData: yes
+LinkingTo: Rcpp
+Imports: fields, foreach, Rcpp (>= 0.12.2)
+Suggests: testthat, knitr, rmarkdown, devtools
+RoxygenNote: 6.1.1
+NeedsCompilation: yes
+Packaged: 2019-08-01 20:35:12 UTC; tarik
+Repository: CRAN
+Date/Publication: 2019-08-01 22:50:02 UTC

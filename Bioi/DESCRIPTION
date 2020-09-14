@@ -1,0 +1,20 @@
+Package: Bioi
+Title: Biological Image Analysis
+Version: 0.2.10
+Author: Zachary Colburn
+Maintainer: Zachary Colburn <zcolburn@gmail.com>
+Description: Single linkage clustering and connected component analyses are often performed on biological images. 'Bioi' provides a set of functions for performing these tasks. This functionality is implemented in several key functions that can extend to from 1 to many dimensions. The single linkage clustering method implemented here can be used on n-dimensional data sets, while connected component analyses are limited to 3 or fewer dimensions.
+Depends: R (>= 3.3.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: Rcpp(>= 0.12.13), assertthat(>= 0.2.0), dplyr(>= 0.7.4),
+        igraph
+LinkingTo: Rcpp
+RoxygenNote: 7.0.2
+Suggests: knitr, rmarkdown, ggplot2, testthat(>= 2.0.0)
+VignetteBuilder: knitr
+NeedsCompilation: yes
+Packaged: 2019-12-08 00:45:28 UTC; ZacharyColburn
+Repository: CRAN
+Date/Publication: 2019-12-08 01:30:08 UTC

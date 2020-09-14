@@ -1,0 +1,21 @@
+useDynLib(bigReg)
+exportPattern("^[[:alpha:]]+")
+import(Rcpp)
+import(MASS)
+import(parallel)
+import(uuid)
+importFrom("methods", "is")
+importFrom("stats", "dgamma", "dpois", "fitted", "make.link",
+             "model.frame", "model.matrix", "model.offset",
+             "model.response", "model.weights", "pf", "pnorm",
+             "printCoefmat", "pt", "rbinom", "rgamma", "rpois", "terms",
+             "binomial")
+importFrom("utils", "read.csv")
+S3method(print,data_frame)
+S3method(print,bglm)
+S3method(print,blm)
+S3method(print,data_matrix)
+S3method(print,summary.bglm)
+S3method(print,summary.blm)
+S3method(summary,bglm)
+S3method(summary,blm)

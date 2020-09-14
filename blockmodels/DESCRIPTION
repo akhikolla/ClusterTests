@@ -1,0 +1,18 @@
+Package: blockmodels
+Type: Package
+Title: Latent and Stochastic Block Model Estimation by a 'V-EM'
+        Algorithm
+Version: 1.1.1
+Date: 2015-04-21
+Author: INRA, Jean-Benoist Leger <jbleger@bordeaux.inra.fr>
+Maintainer: Jean-Benoist Leger <jbleger@bordeaux.inra.fr>
+Description: Latent and Stochastic Block Model estimation by a Variational EM algorithm.
+             Various probability distribution are provided (Bernoulli,
+             Poisson...), with or without covariates.
+License: LGPL-2.1
+Depends: Rcpp (>= 0.10.6), parallel, methods, digest
+LinkingTo: Rcpp, RcppArmadillo
+Packaged: 2015-04-21 06:35:29 UTC; jben
+NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2015-04-21 09:02:26

@@ -1,0 +1,25 @@
+Package: abcADM
+Type: Package
+Title: Fit Accumulated Damage Models and Estimate Reliability using ABC
+Version: 1.0
+Authors@R: c(person(given = "Zongjun", family = "Liu", role = "aut"),
+              person(given = "Chun-Hao", family = "Yang", role = "aut"),
+              person(given = "John", family = "Burkardt", role = c("ctb")),
+              person(given = "Samuel W.K.", family = "Wong",role = c("aut", "cre"), 
+              email = "samuel.wong@uwaterloo.ca"))
+Description: Estimate parameters of accumulated damage (load duration) models based on failure time data under a Bayesian framework, using Approximate Bayesian Computation (ABC). Assess long-term reliability under stochastic load profiles. Yang, Zidek, and Wong (2019) <doi:10.1080/00401706.2018.1512900>.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: Rcpp (>= 1.0.1)
+LinkingTo: Rcpp, BH
+RoxygenNote: 6.1.1
+NeedsCompilation: yes
+Packaged: 2019-11-08 05:12:43 UTC; Samuel
+Author: Zongjun Liu [aut],
+  Chun-Hao Yang [aut],
+  John Burkardt [ctb],
+  Samuel W.K. Wong [aut, cre]
+Maintainer: Samuel W.K. Wong <samuel.wong@uwaterloo.ca>
+Repository: CRAN
+Date/Publication: 2019-11-13 14:50:02 UTC

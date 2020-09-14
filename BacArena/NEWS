@@ -1,0 +1,116 @@
+BacArena v.1.8.2 (Release date: 2020-04-06)
+================
+- complied with new R CRAN guidelines (stringsAsFactors)
+- removed HeatMapFeeding
+
+
+BacArena v.1.8.1 (Release date: 2019-12-16)
+================
+Changes:
+- matlab import support
+- fixed several issues when adding organisms
+- corrected default diffusion constant in addSubs
+- igraph is now only suggested
+- complied with new R CRAN guidelines (matrix is of class matrix + array now)
+
+* github reference: https://github.com/euba/BacArena/releases/tag/v1.8.1
+
+
+BacArena v.1.8 (Release date: 2019-02-15)
+==============
+Changes:
+- improved detection of limiting substances (shadow costs) 
+- shadow costs analysis now possible with cplex, too
+- support for non-default objective functions
+- fixed interaction finding in findfeeding3()
+- occupied arena cells valid also for human cells (bug in emptyHood)
+
+* github reference: https://github.com/euba/BacArena/releases/tag/v1.8
+
+
+BacArena v.1.7 (Release date: 2018-05-09)
+==============
+Changes: 
+- fine-tuning on growth model
+   * several duplications per time step
+   * fixed no growth bug for very high accumulated biomass
+- improved handling of non-biomass objectives
+- better status printing
+- more then one compound in chemotaxis
+- wrong unit of diffusion constant
+- several small updated in plotting methods
+
+* github reference: https://github.com/euba/BacArena/releases/tag/v1.7
+
+
+BacArena v.1.6 (Release date: 2017-03-21)
+==============
+Changes: 
+- redefined growth model 
+   * max cell weight value is used as upper bound for biomass reaction to avoid biomass accumulation in case of overcrowding
+   * deathrate is now scaled according to time steps
+- fixed several issues related to grid geometry (relevant for non-square grids)
+- handling of alternative solutions with flux variability analysis
+- diffusion and advection can be blocked for occupied cells
+- corrected bugs related to continuing of simulations
+- expanded tutorial
+- renamed growth to biomass in arena@orgdat
+- fast stiring 
+- vectorized addOrg
+
+- new reactions
+   * plotReaActivity (plot reaction activity)
+   * findRxnFlux (find usage of metabolite in reactions)
+   * plotSubDist, plotSubDist2 (plot spatial distribution for substances)
+
+* github reference: https://github.com/euba/BacArena/tree/v1.6
+
+
+BacArena v1.5.1 (Release date: 2016-07-20)
+===============
+Changes:
+* improved vignette
+* gut community example data set
+* improved plotting
+
+* github reference: https://github.com/euba/BacArena/commit/67957d833e91d8ba4d118f69f5c3bbe8353ee548 
+
+
+BacArena v1.5 (Release date: 2016-07-13)
+=============
+Changes:
+* parallel support
+* methods for evaluation of replicates
+* fixed numerical bugs
+* fixed growth model
+* findInArena(), getSubHist()
+* advances plotting using ggplot2:
+  - plotSubCurve(), plotGrowthCurve(), plotPhenCurve()
+  - plotAbundances(), plotSpecActivity(), plotSubUsages()
+* integration of shadow prices
+* addDefaultMed() and addEssentialMed()
+* imporved cross feeding detection 
+* alternative objectives integration
+* lots of smaller bugfixes...
+
+* github reference: https://github.com/euba/BacArena/commit/5416fb09d82cbe87bcd701cc7bf389c6116e57ee
+
+
+BacArena v1.0.1 (Release date: 2016-01-06)
+=============
+Changes:
+* new method statSpec()
+* fixed bug in addSubs()
+* new method findFeeding()
+* fixed bug in addEval()
+* new method openArena()
+* corrected vignette
+
+* github reference: https://github.com/euba/BacArena/tree/8ce106f1351af95d387cc70ed2bd1fd18669ed84
+
+
+BacArena v1.0 (Release date: 2015-12-08)
+=============
+initial cran release
+
+* github reference: https://github.com/euba/BacArena/tree/8bf7459530c4a8eda9040e8feb2fa416dea55ab2
